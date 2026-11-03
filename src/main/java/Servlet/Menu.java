@@ -32,9 +32,19 @@ public class Menu extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 //		response.getWriter().append("Served at: ").append(request.getContextPath());
+		String cate = request.getParameter("cate");
 		DrinkDAO drinkDAO = new DrinkDAO();
 		System.out.println("OK");
 		List<Product> list = drinkDAO.findAll();
+		if(cate==null) {
+			
+			list = drinkDAO.findAll();
+		}
+		else {
+			list = drinkDAO.findByCate(cate);
+		}
+		
+		
 		request.setAttribute("listItem", list);
 		request.getRequestDispatcher("/thuc-don.jsp").forward(request, response);
 	}

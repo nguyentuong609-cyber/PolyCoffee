@@ -1,4 +1,21 @@
-/target/
-/.apt_generated/
-/.apt_generated_tests/
-target/ 
+# Maven
+target/
+
+# Java
+*.class
+
+# Eclipse
+.settings/
+.classpath
+.project
+.metadata/
+
+# Logs
+*.log
+
+# Operating system
+.DS_Store
+Thumbs.db
+
+# Environment variables and secrets
+.env

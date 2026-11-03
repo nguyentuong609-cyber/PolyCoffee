@@ -1,71 +1,97 @@
+
 package Ulti;
 
-import jakarta.servlet.Filter;
+import java.io.IOException;
+
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
-import java.io.IOException;
+@WebFilter({"/manager/*", 
+			"/employee/*",
+			"/barista/*",
+			"/DrinkServlet",
+			"/Report",
+			"/UserList"
+			})
+public class AuthFilter extends HttpFilter {
 
-/**
- * Servlet Filter implementation class AuthFilter
- */
-@WebFilter({"/manager/*","/employee/*"})
-public class AuthFilter extends HttpFilter implements Filter {
-       
-    /**
-     * @see HttpFilter#HttpFilter()
-     */
-    public AuthFilter() {
-        super();
-        // TODO Auto-generated constructor stub
+    @Override
+    protected void doFilter(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain chain)
+            throws IOException, ServletException {
+
+        String contextPath = request.getContextPath();
+        String uri = request.getRequestURI();
+        String path = uri.substring(contextPath.length());
+
+        // 1. Check whether the user is logged in.
+        if (!AuthUtil.isAuthenticated(request)) {
+
+            // Save the intended destination across the redirect.
+            HttpSession session = request.getSession();
+            session.setAttribute("REDIRECT_URL",
+                    path + (request.getQueryString() == null
+                            ? ""
+                            : "?" + request.getQueryString()));
+
+            response.sendRedirect(contextPath + "/User/dang-nhap.jsp");
+            return;
+        }
+
+        // 2. Check the user's role for the requested area.
+        if (path.startsWith("/manager/")) {
+            if (!AuthUtil.isManager(request)) {
+                response.sendError(
+                        HttpServletResponse.SC_FORBIDDEN,
+                        "You do not have permission to access this page.");
+                return;
+            }
+        }
+
+        if (path.startsWith("/employee/")) {
+            if (!AuthUtil.isAuthenticated(request)) {
+                response.sendError(
+                        HttpServletResponse.SC_FORBIDDEN,
+                        "You do not have permission to access this page.");
+                return;
+            }
+        }
+        
+        if (path.startsWith("/barista/")
+                && !AuthUtil.isBarista(request)) {
+
+        	response.sendError(
+                    HttpServletResponse.SC_FORBIDDEN,
+                    "You do not have permission to access this page.");
+            return;
+        }
+        
+        if (path.equals("/DrinkServlet")
+                && !AuthUtil.isManager(request)) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+        
+        if (path.equals("/Report")
+        		&& !AuthUtil.isManager(request)) {
+        	response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
+        if (path.equals("/UserList")
+        		&& !AuthUtil.isManager(request)) {
+        	response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+        
+        // 3. Only authorized requests reach the servlet.
+        chain.doFilter(request, response);
     }
-
-	/**
-	 * @see Filter#destroy()
-	 */
-	public void destroy() {
-		// TODO Auto-generated method stub
-	}
-
-	/**
-	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
-	 */
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		// TODO Auto-generated method stub
-		// place your code here
-
-		// pass the request along the filter chain
-		
-		
-		HttpServletRequest httpServReq = (HttpServletRequest) request;
-		HttpServletResponse httpServRes = (HttpServletResponse) response;
-		String uriString = httpServReq.getRequestURI();
-		String error = "";	
-		if(!AuthUtil.isAuthenticated(httpServReq)) {
-			error = "401";
-		} else if(AuthUtil.isManager(httpServReq)&& uriString.contains("/manager")) {
-			error = "403";
-		}
-		if(!error.isEmpty()) {
-			httpServReq.setAttribute("REDIRECT_URL",uriString);
-			httpServRes.sendRedirect(httpServReq.getContextPath()+"/dang-nhap");
-		}
-		else {
-		chain.doFilter(request, response);}
-	}
-
-	/**
-	 * @see Filter#init(FilterConfig)
-	 */
-	public void init(FilterConfig fConfig) throws ServletException {
-		// TODO Auto-generated method stub
-	}
-
 }

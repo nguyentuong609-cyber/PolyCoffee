@@ -21,7 +21,18 @@ public class BillDAO {
 
     }
     
-	public boolean createBill(Bill bill) {
+    public Bill findByBillId(Object id) {
+    	EntityManager em = emf.createEntityManager();
+    	
+    	try {
+    		return em.find(Bill.class, id);
+    	} finally {
+    		em.close();
+    	}
+    }
+    
+    public boolean createBill(Bill bill) {
+        EntityManager em = emf.createEntityManager();
 
         try {
             em.getTransaction().begin();

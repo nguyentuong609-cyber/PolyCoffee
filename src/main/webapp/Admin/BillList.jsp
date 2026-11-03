@@ -341,6 +341,8 @@
                     <th>Username</th>                    
 
                     <th>Total</th>
+                    
+                    <th>Status</th>
 
                     <th>Action</th>
 
@@ -378,6 +380,7 @@
                         ${u.status}
 
                     </td>
+                    <td><a href="${ctx }/Tracking?id=${u.billId}" class="detail-btn">Chi tiết</a></td>
 
                 </tr>
 

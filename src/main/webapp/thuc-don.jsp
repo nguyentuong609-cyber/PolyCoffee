@@ -33,8 +33,8 @@
         <div class="products">
         <c:forEach var="u" items="${listItem}">
         	<div class="item">
-        		<a href="${ctx }/chi_tiet/${u.productId}" class="product-link">
-            	<img src="${ctx}/hinh-anh/imgs/${u.productIMG}" alt="Phindi Hạnh Nhân">
+        		<a href="${ctx}/chi_tiet/${u.productId}" class="product-link">
+            	<img src="${ctx}/hinh-anh/imgs/${u.productIMG}.jpg" alt="${u.productName }">
             	<p>${u.productName}</p>
             	<c:choose>
             	<c:when test="${u.category != 'Bánh'}"><span class="new">${u.sizePrices.sizeS}đ</span></c:when>

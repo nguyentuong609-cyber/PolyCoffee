@@ -130,7 +130,8 @@
 			               name="sl"
 			               id="soluong"
 			               value="1"
-			               min="1">
+			               min="1"
+			               max="30">
 			
 			    </div>
 			

@@ -21,6 +21,22 @@
         padding: 0;
         font-family: Arial, sans-serif;
     }
+    
+    .detail-btn {
+    display: inline-block;
+    padding: 3px 13px;
+    color: black;
+    background-color: #f3f0f6;
+    border: 1px solid black;
+    border-radius: 6px;
+    font-size: 16px;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.detail-btn:hover {
+    background-color: #e6dff0;
+}
 
     body {
         min-height: 100vh;
@@ -342,6 +358,8 @@
 
                     <th>Total</th>
 
+                    <th>Status</th>
+                    
                     <th>Action</th>
 
                 </tr>
@@ -378,7 +396,7 @@
                         ${u.status}
 
                     </td>
-
+                    <td><a href="${ctx }/Tracking?id=${u.billId}" class="detail-btn">Chi tiết</a></td>
                 </tr>
 
             </c:forEach>
